@@ -36,8 +36,30 @@ extension Localizable{
      - parameter localizableString: localizable String Value
      */
     public func applyLocalizableString(_ localizableString: String?) -> Void {
+        guard var string = localizableString else {
+            self.localizableProperty = nil
+			return
+        }
         
-        self.localizableProperty = localizableString?.localized
+        let parts = string.components(separatedBy: "#")
+        if parts.count > 1 {
+            string = parts[1].localized
+            parts[0].forEach { char in
+                if char == "U" {
+                    string = string.uppercased()
+                }
+                if char == "L" {
+                    string = string.lowercased()
+                }
+                if char == "*" {
+                    string = string + "*"
+                }
+            }
+        } else {
+            string = string.localized
+        }
+
+        self.localizableProperty = string
         
     }
 }
